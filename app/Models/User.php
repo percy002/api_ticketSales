@@ -46,4 +46,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the name of the "morph class" for this model.
+     *
+     * @return string
+     */
+    public function getMorphClass()
+    {
+        return 'usuarios';
+    }
 }

@@ -18,7 +18,10 @@ return new class extends Migration
             $table->string('apellido_materno',100);
             $table->string('dni',8)->unique();
             $table->string('email')->unique();
+            $table->enum('role', ['cliente', 'usuario', 'admin']);
             $table->string('celular',15)->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->string('password');
             $table->timestamps();
         });
