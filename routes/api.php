@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\AuthenticationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,3 +23,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/register', [ClienteController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::group(['namespace' => 'Api', 'prefix' => 'v1'], function () {
+    Route::post('login', [AuthenticationController::class, 'store']);
+    Route::post('logout', [AuthenticationController::class, 'destroy'])->middleware('auth:api');
+    Route::middleware('auth:api')->get('/user', [UserController::class, 'getUser']);
+  });
