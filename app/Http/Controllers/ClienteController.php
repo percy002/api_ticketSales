@@ -45,9 +45,9 @@ class ClienteController extends Controller
             'nombres' => 'required|max:100',
             'apellido_paterno' => 'required|max:100',
             'apellido_materno' => 'required|max:100',
-            'dni' => 'required|size:8',
+            'dni' => 'required|size:8|unique:usuarios',
             'email' => 'required|email|unique:usuarios',
-            'celular' => 'required|max:15',
+            'celular' => 'required|max:15|unique:usuarios',
             'password' => 'required|min:6|confirmed',
 
         ], $messages);
@@ -60,7 +60,8 @@ class ClienteController extends Controller
         $input['password'] = bcrypt($input['password']);
         $input['role'] = 'cliente';
         $user = User::create($input);
-        $token = $user->createToken('auth_token')->plainTextToken;
+
+        $token = $user->createToken('auth_token')->accessToken;
 
         return response()->json(['token' => $token, 'token_type' => 'Bearer'], 200);
     }

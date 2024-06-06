@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VentaController;
 use App\Http\Controllers\Api\AuthenticationController;
 /*
 |--------------------------------------------------------------------------
@@ -22,10 +23,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register', [ClienteController::class, 'store']);
-Route::post('/login', [AuthController::class, 'login']);
 
 Route::group(['namespace' => 'Api', 'prefix' => 'v1'], function () {
-    Route::post('login', [AuthenticationController::class, 'store']);
-    Route::post('logout', [AuthenticationController::class, 'destroy'])->middleware('auth:api');
+    Route::post('login', [AuthenticationController::class, 'store'])->name('login');
+
+    Route::middleware('auth:api')->post('logout', [AuthenticationController::class, 'destroy']);
     Route::middleware('auth:api')->get('/user', [UserController::class, 'getUser']);
+    
+    Route::middleware('auth:api')->post('/pagar', [VentaController::class, 'store']);
+
   });
