@@ -13,15 +13,14 @@ return new class extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->bigIncrements('venta_id');
-            $table->unsignedBigInteger('cliente_id')->nullable();
             $table->unsignedBigInteger('usuario_id')->nullable();
             $table->decimal('monto_total', 8, 2);
             $table->string('tipo_pago');
             $table->timestamp('fecha');
-            $table->string('token_culqi')->nullable();
-            
+            $table->string('token_pago')->nullable();
+            $table->timestamps();
+
             $table->foreign('usuario_id')->references('usuario_id')->on('usuarios');        
-            $table->foreign('cliente_id')->references('cliente_id')->on('clientes');        
         });
     }
 

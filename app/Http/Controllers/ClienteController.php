@@ -61,9 +61,9 @@ class ClienteController extends Controller
         $input['role'] = 'cliente';
         $user = User::create($input);
 
-        $token = $user->createToken('auth_token')->accessToken;
+        $user_token = $user->createToken('appToken')->accessToken;
 
-        return response()->json(['token' => $token, 'token_type' => 'Bearer'], 200);
+        return response()->json(['token' => $user_token, 'token_type' => 'Bearer','user'=> $user], 200);
     }
 
     /**

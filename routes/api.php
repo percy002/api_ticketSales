@@ -31,5 +31,6 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1'], function () {
     Route::middleware('auth:api')->get('/user', [UserController::class, 'getUser']);
     
     Route::middleware('auth:api')->post('/pagar', [VentaController::class, 'store']);
+    Route::middleware('auth:api')->get('/boletos', [VentaController::class, 'boletos']);
 
   });

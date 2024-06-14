@@ -11,12 +11,17 @@ class Venta extends Model
     protected $table = 'ventas';
     protected $primaryKey = 'venta_id';
     protected $fillable = [
-        'cliente_id',
         'usuario_id',
         'monto_total',
         'tipo_pago',
         'fecha',
-        'token_culqi'
+        'token_pago'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'token_pago'
     ];
 
 }

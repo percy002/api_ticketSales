@@ -28,10 +28,10 @@ class VentaController extends Controller
      */
     public function store(Request $request)
     {        
-        return response()->json([
-            'success' => false,
-            'message' => $request->all(),
-        ], 400);
+        // return response()->json([
+        //     'success' => false,
+        //     'message' => $request->all(),
+        // ], 400);
         try {
             $messages = [
                 'required' => 'El campo :attribute es obligatorio.',
@@ -44,12 +44,9 @@ class VentaController extends Controller
             ];
     
             $validatedData = $request->validate([
-                'cliente_id' => 'required|integer|exists:clientes,cliente_id',
                 'usuario_id' => 'required|integer|exists:usuarios,usuario_id',
-                'monto_total' => 'required|numeric|min:0',
-                'tipo_pago' => 'required|string',
-                'fecha' => 'required|date',
-                'token_culqi' => 'nullable|string',
+                'generalTickets' => 'required|integer|min:0',
+                'starTickets' => 'required|integer|min:0',
             ]);
         } catch (ValidationException $e) {
             //throw $th;
@@ -59,7 +56,23 @@ class VentaController extends Controller
         }
         
 
-        $venta = new Venta($validatedData);
+        $venta = new Venta();
+        $venta->usuario_id = $validatedData['usuario_id'];
+        $venta->tipo_pago = 'online';
+        $venta->fecha = now();
+
+        $now = now();
+        $turno_manana = now()->setTime(13, 0, 0);
+        
+        if ($now->greaterThan($turno_manana)) {
+            $venta->monto_total = $validatedData['starTickets'] * 30;
+        }
+        else{
+            $venta->monto_total = $validatedData['generalTickets'] * 10;
+        }
+
+
+
         // $venta->save();
 
         if ($venta->save()) {
@@ -108,5 +121,10 @@ class VentaController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function boletos(){
+        $boletos = Venta::all();
+        return response()->json(['boletos'=>$boletos], 200);
     }
 }
