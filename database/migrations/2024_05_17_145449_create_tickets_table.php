@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('cantidad');
             $table->decimal('precio', 8, 2);
             $table->string('QR_ticket');
+            $table->timestamps();
             
             $table->foreign('tipo_ticket_id')->references('tipo_ticket_id')->on('tipos_tickets');
             $table->foreign('venta_id')->references('venta_id')->on('ventas');

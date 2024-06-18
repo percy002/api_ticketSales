@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
+Use App\Models\TiposTicket;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -18,5 +18,15 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        TiposTicket::create([
+            'nombre' => 'General',
+            'precio' => 10.00,
+            'turno' => 'mañana',
+        ]);
+        TiposTicket::create([
+            'nombre' => 'estelar',
+            'precio' => 30.00,
+            'turno' => 'tarde',
+        ]);
     }
 }

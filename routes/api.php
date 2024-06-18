@@ -32,5 +32,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1'], function () {
     
     Route::middleware('auth:api')->post('/pagar', [VentaController::class, 'store']);
     Route::middleware('auth:api')->get('/boletos', [VentaController::class, 'boletos']);
+    Route::middleware('auth:api')->get('/ventas/{id}', [VentaController::class, 'ventasXusuario']);
+    Route::middleware('auth:api')->get('/venta/{id}', [VentaController::class, 'show']);
 
   });

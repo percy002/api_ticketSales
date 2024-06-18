@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-
+use App\Models\Ticket;
+use Carbon\Carbon;
 class VentaController extends Controller
 {
     /**
@@ -54,8 +55,13 @@ class VentaController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         }
+        if ($validatedData['generalTickets'] == 0 && $validatedData['starTickets'] == 0) {
+            # code...
+            return response()->json([
+                'errors' => ['Al menos uno de los tickets debe ser mayor a cero.']
+            ], 422);
+        }
         
-
         $venta = new Venta();
         $venta->usuario_id = $validatedData['usuario_id'];
         $venta->tipo_pago = 'online';
@@ -72,10 +78,25 @@ class VentaController extends Controller
         }
 
 
-
-        // $venta->save();
-
         if ($venta->save()) {
+            $ticket = new Ticket();
+            $ticket->venta_id = $venta->venta_id;
+            $ticket->turno = 'mañana';
+            if ($now->greaterThan($turno_manana)) {
+                $ticket->tipo_ticket_id = 2;
+                $ticket->cantidad = $validatedData['starTickets'];
+            }
+            else{
+                $ticket->tipo_ticket_id = 1;
+                $ticket->cantidad = $validatedData['generalTickets'];
+            }
+            // $ticket->cantidad = $validatedData['generalTickets'];
+            $ticket->precio = $venta->monto_total;
+
+            $usuario = $venta->usuario;
+
+            $ticket->QR_ticket = $usuario->dni . rand(1000, 9999) . Carbon::parse($venta->fecha)->format('H:i') . $ticket->venta_id;            $ticket->save();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Compra realizada con éxito',
@@ -97,6 +118,14 @@ class VentaController extends Controller
     public function show(string $id)
     {
         //
+        $venta = Venta::where('venta_id', $id)->with('tickets')->first();
+        if ($venta) {
+            # code...
+            return response()->json(['venta'=>$venta], 200);
+        }
+        else{
+            return response()->json(['message'=>'Venta no encontrada'], 404);
+        }
     }
 
     /**
@@ -126,5 +155,10 @@ class VentaController extends Controller
     public function boletos(){
         $boletos = Venta::all();
         return response()->json(['boletos'=>$boletos], 200);
+    }
+
+    public function ventasXusuario($id){
+        $ventas = Venta::where('usuario_id', $id)->with('tickets')->latest()->get();
+        return response()->json(['ventas'=>$ventas], 200);
     }
 }
